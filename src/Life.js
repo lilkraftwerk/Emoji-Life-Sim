@@ -1,10 +1,9 @@
-import { NEUT, DEAD, LIVE, ANIMAL, PLANT, GROUND, ROCK } from "./Globals";
+import { shuffle, sample } from "lodash";
+
+import { ANIMAL, PLANT } from "./Globals";
 import { makeAnimal, makeRock, makePlant } from "./Models";
 import { getActionThrottled, getEmptyCoordsForBlankBoard } from "./Utils";
 
-import { shuffle, sample } from "lodash";
-
-// this is a view thingbv
 export const convertRowColumnToCoords = (row, col, emojiSize) => {
   return [col * emojiSize, row * emojiSize];
 };

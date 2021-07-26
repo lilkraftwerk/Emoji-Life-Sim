@@ -1,7 +1,6 @@
-import { ANIMAL, PLANT, GROUND, ROCK } from "./Globals";
-
 import { sample } from "lodash";
-// import { getRandomInt } from "./Utils";
+
+import { ANIMAL, PLANT, GROUND, ROCK } from "./Globals";
 
 const coinFlipBoolean = () => {
   return Math.random() < 0.5;
@@ -74,7 +73,6 @@ export const makeRock = (row, column) => {
 
 export const makeGround = (row, column) => {
   const sprite = sample(rockSprites);
-  const action = null;
 
   return {
     type: GROUND,
@@ -87,7 +85,6 @@ export const makeGround = (row, column) => {
 
 export const makeAnimal = (row, column) => {
   const sprite = sample(animalSprites);
-  const action = null;
 
   return {
     type: ANIMAL,
@@ -105,7 +102,6 @@ export const makePlant = (row, column, inputSprite = null) => {
   } else {
     sprite = sample(plantSprites);
   }
-  const action = null;
 
   return {
     type: PLANT,

@@ -166,9 +166,10 @@ export const colors = [
 ];
 
 export const getRandomInt = (min, max) => {
-  min = Math.ceil(min);
-  max = Math.floor(max);
-  return Math.floor(Math.random() * (max - min + 1)) + min;
+  return (
+    Math.floor(Math.random() * (Math.floor(max) - Math.ceil(min) + 1)) +
+    Math.ceil(min)
+  );
 };
 
 export const filterArr = (totalArr, entryToRemove) => {
@@ -178,7 +179,9 @@ export const filterArr = (totalArr, entryToRemove) => {
   });
 };
 
-export const isArrayEqual = (x, y) => isEmpty(xorWith(x, y, isEqual));
+export const isArrayEqual = (x, y) => {
+  return isEmpty(xorWith(x, y, isEqual));
+};
 
 // https://stackoverflow.com/questions/43566019/how-to-choose-a-weighted-random-array-element-in-javascript/55671924
 // let testValues = [{
@@ -195,13 +198,14 @@ export const isArrayEqual = (x, y) => isEmpty(xorWith(x, y, isEqual));
 // }]
 
 export const getActionByProbability = (values) => {
-  let i,
-    pickedValue,
-    randomNr = Math.random(),
-    threshold = 0;
+  let i;
+  let pickedValue;
+  const randomNr = Math.random();
+  let threshold = 0;
 
-  for (i = 0; i < values.length; i++) {
+  for (i = 0; i < values.length; i += 1) {
     if (values[i].probability === "*") {
+      // eslint-disable-next-line no-continue
       continue;
     }
 
@@ -212,8 +216,10 @@ export const getActionByProbability = (values) => {
     }
 
     if (!pickedValue) {
-      //nothing found based on probability value, so pick element marked with wildcard
-      pickedValue = values.filter((value) => value.probability === "*");
+      // nothing found based on probability value, so pick element marked with wildcard
+      pickedValue = values.filter((value) => {
+        return value.probability === "*";
+      });
     }
   }
 

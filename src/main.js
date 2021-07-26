@@ -1,15 +1,6 @@
-import { shuffle } from "lodash";
-import { NEUT, DEAD, LIVE, EMOJI_SIZE } from "./Globals";
-import { getRandomInt } from "./Utils.js";
-import {
-  applyChanges,
-  convertRowColumnToCoords,
-  getBoardChanges,
-  setUpBoard,
-  setUpActors,
-  updateActors,
-} from "./Life";
-import { makeAnimal, makeRock } from "./Models";
+import { EMOJI_SIZE } from "./Globals";
+
+import { convertRowColumnToCoords, setUpActors, updateActors } from "./Life";
 
 let rowCount;
 let columnCount;
@@ -23,9 +14,9 @@ let spriteContext;
 let spriteCanvasReversed;
 let spriteContextReversed;
 
-const FILENAME = `src/sprites.png`;
+const FILENAME = "src/sprites.png";
 
-const loadSpritesheets = () => {
+const loadSpritesheets = (callback = () => {}) => {
   spriteCanvas = document.createElement("canvas");
   spriteContext = spriteCanvas.getContext("2d");
   spriteCanvas.width = 600;
@@ -42,7 +33,7 @@ const loadSpritesheets = () => {
     spriteContext.drawImage(spritesheet, 0, 0, 600, 600);
     spriteContextReversed.scale(-1, 1);
     spriteContextReversed.drawImage(spritesheet, -600, 0, 600, 600);
-    setupCanvas();
+    callback();
   };
   spritesheet.src = FILENAME;
 };
@@ -57,22 +48,6 @@ export const getEmojiAtLocationReversed = (emojiRow, emojiColumn) => {
   const xInd = Math.abs(29 - emojiRow) * 20;
   const yInd = emojiColumn * 20;
   return [xInd, yInd];
-};
-
-const generateTestActors = () => {
-  const tests = [];
-  for (let i = 0; i < 100; i += 1) {
-    const row = getRandomInt(0, 50);
-    const column = getRandomInt(0, 50);
-    const spriteX = getRandomInt(1, 20);
-    const spriteY = getRandomInt(1, 20);
-    tests.push({
-      row,
-      column,
-      sprite: [spriteX, spriteY],
-    });
-  }
-  return tests;
 };
 
 const draw = (actors) => {
@@ -139,4 +114,4 @@ const setupCanvas = () => {
   draw(actors);
 };
 
-loadSpritesheets();
+loadSpritesheets(setupCanvas);
