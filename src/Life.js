@@ -197,7 +197,7 @@ export const updateActors = (actors, rowCount, colCount) => {
         const leftMove = [0, -1];
         const rightMove = [0, 1];
 
-        const shuffledVerticalMoves = shuffle([upMove, downMove]) 
+        const shuffledVerticalMoves = shuffle([upMove, downMove]);
         const leftMoves = [leftMove, ...shuffledVerticalMoves];
         const rightMoves = [rightMove, ...shuffledVerticalMoves];
 
@@ -338,5 +338,6 @@ export const setUpActors = ({
     const [row, col] = emptyCoordsShuffled.shift();
     actors.push(makeCar(row, col));
   }
+
   return actors;
 };

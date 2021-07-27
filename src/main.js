@@ -112,7 +112,7 @@ const setupCanvas = () => {
   const actors = setUpActors({
     rowCount,
     columnCount,
-    carCount: 50,
+    carCount: 500,
     plantCount: 50,
     animalCount: 50,
     rockCount: 50,
