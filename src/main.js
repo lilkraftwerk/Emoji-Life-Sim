@@ -16,6 +16,15 @@ let spriteContextReversed;
 
 const FILENAME = "src/sprites.png";
 
+let actors = [];
+
+const actorWorker = new Worker(new URL("./Actor.worker.js", import.meta.url));
+actorWorker.onmessage = function (event) {
+  const { value } = event.data;
+  actors = value;
+  draw(actors);
+};
+
 const loadSpritesheets = (callback = () => {}) => {
   spriteCanvas = document.createElement("canvas");
   spriteContext = spriteCanvas.getContext("2d");
@@ -50,7 +59,7 @@ export const getEmojiAtLocationReversed = (emojiRow, emojiColumn) => {
   return [xInd, yInd];
 };
 
-const draw = (actors) => {
+const draw = () => {
   context.clearRect(0, 0, canvas.width, canvas.height);
   actors.forEach((currentActor) => {
     const { sprite, row, column, flipSprite } = currentActor;
@@ -95,9 +104,11 @@ const draw = (actors) => {
     }
   });
 
-  requestAnimationFrame(() => {
-    const newActors = updateActors(actors, rowCount, columnCount);
-    draw(newActors);
+  actorWorker.postMessage({
+    message: "UPDATE_ACTORS",
+    value: actors,
+    rowCount,
+    columnCount,
   });
 };
 
@@ -109,7 +120,7 @@ const setupCanvas = () => {
 
   columnCount = Math.ceil(canvas.width / EMOJI_SIZE);
   rowCount = Math.ceil(canvas.height / EMOJI_SIZE);
-  const actors = setUpActors({
+  actors = setUpActors({
     rowCount,
     columnCount,
     carCount: 500,
@@ -117,6 +128,7 @@ const setupCanvas = () => {
     animalCount: 50,
     rockCount: 50,
   });
+
   draw(actors);
 };
 
