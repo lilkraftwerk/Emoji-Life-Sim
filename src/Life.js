@@ -1,7 +1,7 @@
 import { shuffle, sample } from "lodash";
 
-import { ANIMAL, PLANT } from "./Globals";
-import { makeAnimal, makeRock, makePlant } from "./Models";
+import { ANIMAL, PLANT, CAR } from "./Globals";
+import { makeAnimal, makeRock, makePlant, makeCar } from "./Models";
 import { getActionThrottled, getEmptyCoordsForBlankBoard } from "./Utils";
 
 export const convertRowColumnToCoords = (row, col, emojiSize) => {
@@ -114,7 +114,7 @@ export const updateActors = (actors, rowCount, colCount) => {
   const shuffledActors = shuffle([...actors]);
   let emptyCells = findAllEmptyCells(rowCount, colCount, shuffledActors);
   shuffledActors.forEach((currentActor) => {
-    const { type, row, column, sprite } = currentActor;
+    const { type, row, column, sprite, flipSprite } = currentActor;
 
     const surroundingEmpties = emptyCells.filter(([emptyX, emptyY]) => {
       if (emptyX === row - 1 || emptyX === row || emptyX === row + 1) {
@@ -180,6 +180,75 @@ export const updateActors = (actors, rowCount, colCount) => {
       chosenAction();
     }
 
+    if (type === CAR) {
+      if (column <= 0 || column >= colCount - 1) {
+        currentActor.alive = false;
+      }
+
+      const driveAction = () => {
+        const drivingLeft = flipSprite === false;
+        if (surroundingEmpties.length <= 0) {
+          return;
+        }
+
+        const possibleCarMoves = [];
+        const upMove = [-1, 0];
+        const downMove = [1, 0];
+        const leftMove = [0, -1];
+        const rightMove = [0, 1];
+
+        const shuffledVerticalMoves = shuffle([upMove, downMove]) 
+        const leftMoves = [leftMove, ...shuffledVerticalMoves];
+        const rightMoves = [rightMove, ...shuffledVerticalMoves];
+
+        if (drivingLeft) {
+          leftMoves.forEach((currentMove) => {
+            const newRow = row + currentMove[0];
+            const newColumn = column + currentMove[1];
+
+            surroundingEmpties.forEach((currentEmpty) => {
+              if (newRow === currentEmpty[0] && newColumn === currentEmpty[1]) {
+                possibleCarMoves.push(currentEmpty);
+              }
+            });
+          });
+        } else {
+          rightMoves.forEach((currentMove) => {
+            const newRow = row + currentMove[0];
+            const newColumn = column + currentMove[1];
+
+            surroundingEmpties.forEach((currentEmpty) => {
+              if (newRow === currentEmpty[0] && newColumn === currentEmpty[1]) {
+                possibleCarMoves.push(currentEmpty);
+              }
+            });
+          });
+        }
+
+        if (possibleCarMoves.length === 0) {
+          return;
+        }
+
+        let move = possibleCarMoves[0];
+        currentActor.row = move[0];
+        currentActor.column = move[1];
+      };
+
+      const actionsWithChance = [
+        {
+          value: driveAction,
+          probability: 0.1,
+        },
+        {
+          value: () => {},
+          probability: 0.9,
+        },
+      ];
+
+      const chosenAction = getActionThrottled(actionsWithChance, 90);
+      chosenAction();
+    }
+
     if (type === PLANT) {
       const reproduceAction = () => {
         if (surroundingEmpties.length <= 0 || neighbors.length <= 0) {
@@ -220,8 +289,8 @@ export const updateActors = (actors, rowCount, colCount) => {
     }
   });
 
-  const withDeadRemoved = shuffledActors.filter((currentActor) => {
-    return currentActor.alive === true;
+  const withDeadRemoved = shuffledActors.filter((oneActor) => {
+    return oneActor.alive === true;
   });
   return withDeadRemoved;
 };
@@ -235,13 +304,14 @@ export const applyChanges = (board, changes) => {
   return newBoard;
 };
 
-export const setUpActors = (
+export const setUpActors = ({
   rowCount,
   columnCount,
   animalCount,
   rockCount,
-  plantCount
-) => {
+  plantCount,
+  carCount,
+}) => {
   const emptyCoordsShuffled = getEmptyCoordsForBlankBoard(
     rowCount,
     columnCount
@@ -264,5 +334,9 @@ export const setUpActors = (
     actors.push(makePlant(row, col));
   }
 
+  for (let i = 0; i < carCount; i += 1) {
+    const [row, col] = emptyCoordsShuffled.shift();
+    actors.push(makeCar(row, col));
+  }
   return actors;
 };

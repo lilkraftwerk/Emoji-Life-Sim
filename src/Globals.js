@@ -13,3 +13,4 @@ export const ANIMAL = "ANIMAL";
 export const PLANT = "PLANT";
 export const GROUND = "GROUND";
 export const ROCK = "ROCK";
+export const CAR = "CAR";

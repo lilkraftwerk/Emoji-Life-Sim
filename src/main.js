@@ -109,8 +109,14 @@ const setupCanvas = () => {
 
   columnCount = Math.ceil(canvas.width / EMOJI_SIZE);
   rowCount = Math.ceil(canvas.height / EMOJI_SIZE);
-  const actors = setUpActors(rowCount, columnCount, 200, 200, 200);
-
+  const actors = setUpActors({
+    rowCount,
+    columnCount,
+    carCount: 50,
+    plantCount: 50,
+    animalCount: 50,
+    rockCount: 50,
+  });
   draw(actors);
 };
 
