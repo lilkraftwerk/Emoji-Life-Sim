@@ -1,6 +1,6 @@
-import { EMOJI_SIZE } from "./Globals";
+import { EMOJI_SIZE, loadingImage } from "./Globals";
 
-import { convertRowColumnToCoords, setUpActors, updateActors } from "./Life";
+import { convertRowColumnToCoords, setUpActors } from "./Life";
 
 let rowCount;
 let columnCount;
@@ -19,11 +19,6 @@ const FILENAME = "src/sprites.png";
 let actors = [];
 
 const actorWorker = new Worker(new URL("./Actor.worker.js", import.meta.url));
-actorWorker.onmessage = function (event) {
-  const { value } = event.data;
-  actors = value;
-  draw(actors);
-};
 
 const loadSpritesheets = (callback = () => {}) => {
   spriteCanvas = document.createElement("canvas");
@@ -103,6 +98,32 @@ const draw = () => {
       );
     }
   });
+};
+
+const setupCanvas = () => {
+  columnCount = Math.ceil(canvas.width / EMOJI_SIZE);
+  rowCount = Math.ceil(canvas.height / EMOJI_SIZE);
+  actors = setUpActors({
+    rowCount,
+    columnCount,
+    carCount: 5,
+    plantCount: 100,
+    animalCount: 50,
+    rockCount: 10,
+  });
+
+  actorWorker.onmessage = (event) => {
+    const { value } = event.data;
+    actors = value;
+    draw(actors);
+
+    actorWorker.postMessage({
+      message: "UPDATE_ACTORS",
+      value: actors,
+      rowCount,
+      columnCount,
+    });
+  };
 
   actorWorker.postMessage({
     message: "UPDATE_ACTORS",
@@ -112,24 +133,30 @@ const draw = () => {
   });
 };
 
-const setupCanvas = () => {
+const setLoadingScreen = () => {
   canvas = document.getElementById("myCanvas");
   context = canvas.getContext("2d");
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
 
-  columnCount = Math.ceil(canvas.width / EMOJI_SIZE);
-  rowCount = Math.ceil(canvas.height / EMOJI_SIZE);
-  actors = setUpActors({
-    rowCount,
-    columnCount,
-    carCount: 500,
-    plantCount: 50,
-    animalCount: 50,
-    rockCount: 50,
-  });
-
-  draw(actors);
+  const loadingText = new Image();
+  loadingText.onload = () => {
+    for (
+      let currentX = -loadingImage.width;
+      currentX < canvas.width + loadingImage.width;
+      currentX += loadingImage.width
+    ) {
+      for (
+        let currentY = -loadingImage.height;
+        currentY < canvas.height + loadingImage.width;
+        currentY += loadingImage.height
+      ) {
+        context.drawImage(loadingText, currentX, currentY);
+      }
+    }
+    loadSpritesheets(setupCanvas);
+  };
+  loadingText.src = loadingImage.data;
 };
 
-loadSpritesheets(setupCanvas);
+setLoadingScreen();

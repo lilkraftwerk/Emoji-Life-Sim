@@ -12,10 +12,6 @@ function removeEmptyCell(allEmptyCells, coordsToRemove) {
   });
 }
 
-const addEmptyCell = (allEmptyCells, coordsToAdd) => {
-  return [...allEmptyCells, coordsToAdd];
-};
-
 function findAllEmptyCells(rowCount, columnCount, actors) {
   const usedCoords = actors.map((thisActor) => {
     return `${thisActor.row}-${thisActor.column}`;
@@ -187,15 +183,11 @@ function updateActors(actors, rowCount, colCount) {
       const actionsWithChance = [
         {
           value: driveAction,
-          probability: 0.1,
-        },
-        {
-          value: () => {},
-          probability: 0.9,
+          probability: 1,
         },
       ];
 
-      const chosenAction = getActionThrottled(actionsWithChance, 90);
+      const chosenAction = getActionThrottled(actionsWithChance, 25);
       chosenAction();
     }
 
@@ -245,9 +237,9 @@ function updateActors(actors, rowCount, colCount) {
   return withDeadRemoved;
 }
 
+// eslint-disable-next-line func-names
 onmessage = function (event) {
   const { message, value, rowCount, columnCount } = event.data;
-  console.log("Message received from main script");
   if (message === "UPDATE_ACTORS") {
     const newActors = updateActors(value, rowCount, columnCount);
     postMessage({ message: "UPDATE_ACTORS", value: newActors });
