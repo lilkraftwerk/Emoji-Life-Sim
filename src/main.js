@@ -98,16 +98,30 @@ const draw = () => {
       );
     }
   });
+
+  requestAnimationFrame(() => {
+    draw(actors);
+  });
+};
+
+const sendActorsForUpdate = (newActors) => {
+  actorWorker.postMessage({
+    message: "UPDATE_ACTORS",
+    value: newActors,
+    rowCount,
+    columnCount,
+  });
 };
 
 const setupCanvas = () => {
   columnCount = Math.ceil(canvas.width / EMOJI_SIZE);
   rowCount = Math.ceil(canvas.height / EMOJI_SIZE);
+
   actors = setUpActors({
     rowCount,
     columnCount,
     carCount: 5,
-    plantCount: 100,
+    plantCount: 50,
     animalCount: 50,
     rockCount: 10,
   });
@@ -115,22 +129,11 @@ const setupCanvas = () => {
   actorWorker.onmessage = (event) => {
     const { value } = event.data;
     actors = value;
-    draw(actors);
-
-    actorWorker.postMessage({
-      message: "UPDATE_ACTORS",
-      value: actors,
-      rowCount,
-      columnCount,
-    });
+    sendActorsForUpdate(actors);
   };
 
-  actorWorker.postMessage({
-    message: "UPDATE_ACTORS",
-    value: actors,
-    rowCount,
-    columnCount,
-  });
+  sendActorsForUpdate(actors);
+  draw(actors);
 };
 
 const setLoadingScreen = () => {

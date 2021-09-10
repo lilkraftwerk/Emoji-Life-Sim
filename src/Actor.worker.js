@@ -1,7 +1,7 @@
 import { shuffle, sample } from "lodash";
 import { ANIMAL, PLANT, CAR } from "./Globals";
-import { makeAnimal, makeRock, makePlant, makeCar } from "./Models";
-import { getActionThrottled, getEmptyCoordsForBlankBoard } from "./Utils";
+import { makePlant } from "./Models";
+import { getActionThrottled } from "./Utils";
 
 function removeEmptyCell(allEmptyCells, coordsToRemove) {
   return allEmptyCells.filter((currentCell) => {

@@ -35,7 +35,7 @@ export const makeRock = (row, column) => {
   };
 };
 
-export const makeCar = (row, column, flipSprite = false) => {
+export const makeCar = (row, column) => {
   const sprite = sample(carSprites);
 
   return {
