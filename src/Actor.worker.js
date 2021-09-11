@@ -1,16 +1,19 @@
+/* eslint-disable no-param-reassign */
 import { shuffle, sample } from "lodash";
 import { ANIMAL, PLANT, CAR } from "./Globals";
 import { makePlant } from "./Models";
 import { getActionThrottled } from "./Utils";
 
-function removeEmptyCell(allEmptyCells, coordsToRemove) {
+let localActors = [];
+
+const removeEmptyCell = (allEmptyCells, coordsToRemove) => {
   return allEmptyCells.filter((currentCell) => {
     return (
       currentCell[0] !== coordsToRemove[0] &&
       currentCell[1] !== coordsToRemove[1]
     );
   });
-}
+};
 
 function findAllEmptyCells(rowCount, columnCount, actors) {
   const usedCoords = actors.map((thisActor) => {
@@ -36,7 +39,7 @@ function findAllEmptyCells(rowCount, columnCount, actors) {
   return empties;
 }
 
-function findNeighbors(actor, allActors) {
+const findNeighbors = (actor, allActors) => {
   const { row, column } = actor;
 
   const neighbors = allActors.filter((currentActor) => {
@@ -54,9 +57,9 @@ function findNeighbors(actor, allActors) {
   });
 
   return neighbors;
-}
+};
 
-function updateActors(actors, rowCount, colCount) {
+const updateActors = (actors, rowCount, colCount) => {
   const shuffledActors = shuffle([...actors]);
   let emptyCells = findAllEmptyCells(rowCount, colCount, shuffledActors);
   shuffledActors.forEach((currentActor) => {
@@ -176,8 +179,9 @@ function updateActors(actors, rowCount, colCount) {
         }
 
         const move = possibleCarMoves[0];
-        currentActor.row = move[0];
-        currentActor.column = move[1];
+        const [newRow, newMove] = move;
+        currentActor.row = newRow;
+        currentActor.column = newMove;
       };
 
       const actionsWithChance = [
@@ -235,13 +239,22 @@ function updateActors(actors, rowCount, colCount) {
     return oneActor.alive === true;
   });
   return withDeadRemoved;
-}
+};
+
+const actorUpdateLoop = (rowCount, columnCount) => {
+  localActors = updateActors(localActors, rowCount, columnCount);
+  postMessage({ message: "UPDATE_ACTORS", value: localActors });
+  setTimeout(() => {
+    actorUpdateLoop(rowCount, columnCount);
+  }, 1000 / 30);
+};
 
 // eslint-disable-next-line func-names
 onmessage = function (event) {
   const { message, value, rowCount, columnCount } = event.data;
   if (message === "UPDATE_ACTORS") {
-    const newActors = updateActors(value, rowCount, columnCount);
-    postMessage({ message: "UPDATE_ACTORS", value: newActors });
+    localActors = value;
+    actorUpdateLoop(rowCount, columnCount);
+    // postMessage({ message: "UPDATE_ACTORS", value: newActors });
   }
 };

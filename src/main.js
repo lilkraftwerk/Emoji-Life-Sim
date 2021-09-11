@@ -129,7 +129,7 @@ const setupCanvas = () => {
   actorWorker.onmessage = (event) => {
     const { value } = event.data;
     actors = value;
-    sendActorsForUpdate(actors);
+    // sendActorsForUpdate(actors);
   };
 
   sendActorsForUpdate(actors);
