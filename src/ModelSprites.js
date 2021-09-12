@@ -55,4 +55,15 @@ export const plantSprites = [
   [25, 20],
 ];
 
-export const rockSprites = [[28, 10]];
+export const rockSprites = [
+  [0, 23],
+  [23, 18],
+  [23, 20],
+  [23, 21],
+  [28, 10],
+  [15, 0],
+  [19, 27],
+  [13, 12],
+  [9, 1],
+  [9, 0],
+];

@@ -1,4 +1,31 @@
-import { isEmpty, isEqual, xorWith, shuffle } from "lodash";
+/* eslint-disable no-param-reassign */
+
+// from https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
+export const shuffle = (array) => {
+  let currentIndex = array.length;
+  let randomIndex;
+
+  // While there remain elements to shuffle...
+  while (currentIndex !== 0) {
+    // Pick a remaining element...
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex -= 1;
+
+    // And swap it with the current element.
+    [array[currentIndex], array[randomIndex]] = [
+      array[randomIndex],
+      array[currentIndex],
+    ];
+  }
+
+  return array;
+};
+
+export const sample = (inputArray) => {
+  const randomElement =
+    inputArray[Math.floor(Math.random() * inputArray.length)];
+  return randomElement;
+};
 
 export const colors = [
   "#ED0A3F",
@@ -179,8 +206,8 @@ export const filterArr = (totalArr, entryToRemove) => {
   });
 };
 
-export const isArrayEqual = (x, y) => {
-  return isEmpty(xorWith(x, y, isEqual));
+export const isArrayEqual = (a1, a2) => {
+  return JSON.stringify(a1) === JSON.stringify(a2);
 };
 
 // https://stackoverflow.com/questions/43566019/how-to-choose-a-weighted-random-array-element-in-javascript/55671924

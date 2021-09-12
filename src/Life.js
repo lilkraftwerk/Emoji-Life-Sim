@@ -1,8 +1,5 @@
-import { shuffle, sample } from "lodash";
-
-import { ANIMAL, PLANT, CAR } from "./Globals";
 import { makeAnimal, makeRock, makePlant, makeCar } from "./Models";
-import { getActionThrottled, getEmptyCoordsForBlankBoard } from "./Utils";
+import { getEmptyCoordsForBlankBoard } from "./Utils";
 
 export const convertRowColumnToCoords = (row, col, emojiSize) => {
   return [col * emojiSize, row * emojiSize];

@@ -1,8 +1,7 @@
 /* eslint-disable no-param-reassign */
-import { shuffle, sample } from "lodash";
 import { ANIMAL, PLANT, CAR } from "./Globals";
 import { makePlant } from "./Models";
-import { getActionThrottled } from "./Utils";
+import { shuffle, sample, getActionThrottled } from "./Utils";
 
 let localActors = [];
 

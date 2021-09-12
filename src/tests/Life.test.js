@@ -1,14 +1,8 @@
-import { isArray } from "lodash";
 import { ANIMAL, ROCK } from "../Globals";
 import {
   findAllEmptyCells,
   findNeighbors,
   updateActors,
-  // applyChanges,
-  // getCellAtCoords,
-  // getNeighbors,
-  // getBoardChanges,
-  // getNeighborCoords,
 } from "../Life";
 
 import { isArrayEqual } from "../Utils";

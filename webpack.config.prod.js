@@ -7,6 +7,12 @@ module.exports = {
     path: path.resolve(__dirname, "./build/"),
     filename: "bundle.js",
   },
+  optimization: {
+    splitChunks: false,
+    concatenateModules: true,
+    moduleIds: "named",
+    chunkIds: "named",
+  },
   module: {
     rules: [
       {
@@ -20,5 +26,5 @@ module.exports = {
         },
       },
     ],
-  },
+  }
 };

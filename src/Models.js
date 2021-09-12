@@ -1,4 +1,4 @@
-import { sample } from "lodash";
+import { sample } from "./Utils";
 
 import { ANIMAL, PLANT, GROUND, ROCK, CAR } from "./Globals";
 import {
