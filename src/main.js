@@ -130,13 +130,20 @@ const setupCanvas = () => {
   columnCount = Math.ceil(canvas.width / EMOJI_SIZE);
   rowCount = Math.ceil(canvas.height / EMOJI_SIZE);
 
+  const totalSquares = columnCount * rowCount;
+
+  const getWeightedCount = (factor) => {
+    return Math.ceil(totalSquares * factor);
+  }
+
+  debugger;
   actors = setUpActors({
     rowCount,
     columnCount,
-    carCount: 5,
-    plantCount: 50,
-    animalCount: 50,
-    rockCount: 10,
+    carCount: getWeightedCount(0.01),
+    plantCount: getWeightedCount(0.05),
+    animalCount: getWeightedCount(0.03),
+    rockCount: getWeightedCount(0.03),
   });
 
   sendActorsForUpdate(actors);
@@ -184,6 +191,8 @@ const setResizeHandler = (resizeCallback, timeout = 200) => {
 };
 
 const resizeCallback = () => {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
   setupCanvas();
 };
 setResizeHandler(resizeCallback, 250);
