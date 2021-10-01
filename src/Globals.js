@@ -1,12 +1,6 @@
 // sizes
 export const EMOJI_SIZE = 20;
-export const EMOJI_WIDTH = 20;
-export const START_LIVE = 950;
-
-// static emojis
-export const NEUT = "NEUTRAL";
-export const DEAD = "DEAD";
-export const LIVE = "LIVE";
+export const EMOJI_WIDTH = 10;
 
 // actor types
 export const ANIMAL = "ANIMAL";
