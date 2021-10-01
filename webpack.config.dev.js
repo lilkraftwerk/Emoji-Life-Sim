@@ -7,6 +7,10 @@ module.exports = {
     main: "./src/main.js",
     selector: "./src/selector/selector.js",
   },
+  devServer: {
+    compress: true,
+    disableHostCheck: true,
+  },
   watch: true,
   output: {
     filename: "[name].bundle.js",

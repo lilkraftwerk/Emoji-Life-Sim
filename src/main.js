@@ -1,6 +1,6 @@
 import { EMOJI_SIZE, loadingImage } from "./Globals";
-
 import { convertRowColumnToCoords, setUpActors } from "./Life";
+import scaleCanvas from './ScaleCanvas'
 
 let rowCount;
 let columnCount;
@@ -124,7 +124,7 @@ const sendActorsForUpdate = (newActors) => {
   });
 };
 
-const setupCanvas = () => {
+const setupSimulation = () => {
   clearActorsInWorker();
 
   columnCount = Math.ceil(canvas.width / EMOJI_SIZE);
@@ -134,9 +134,8 @@ const setupCanvas = () => {
 
   const getWeightedCount = (factor) => {
     return Math.ceil(totalSquares * factor);
-  }
+  };
 
-  debugger;
   actors = setUpActors({
     rowCount,
     columnCount,
@@ -151,10 +150,18 @@ const setupCanvas = () => {
 };
 
 const setLoadingScreen = () => {
+  // get canvas
   canvas = document.getElementById("myCanvas");
   context = canvas.getContext("2d");
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
+
+  const newWidth = window.innerWidth; 
+  const newHeight = window.innerHeight; 
+
+  scaleCanvas(canvas, context, newWidth, newHeight)
+
+  canvas.width = newWidth;
+  canvas.height = newHeight;
+
 
   const loadingText = new Image();
   loadingText.onload = () => {
@@ -171,7 +178,7 @@ const setLoadingScreen = () => {
         context.drawImage(loadingText, currentX, currentY);
       }
     }
-    loadSpritesheets(setupCanvas);
+    loadSpritesheets(setupSimulation);
   };
   loadingText.src = loadingImage.data;
 };
@@ -193,7 +200,7 @@ const setResizeHandler = (resizeCallback, timeout = 200) => {
 const resizeCallback = () => {
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
-  setupCanvas();
+  setupSimulation();
 };
 setResizeHandler(resizeCallback, 250);
 
