@@ -4,6 +4,7 @@ import { makePlant } from "./Models";
 import { shuffle, sample, getActionThrottled } from "./Utils";
 
 let localActors = [];
+let timeoutVariable;
 
 const removeEmptyCell = (allEmptyCells, coordsToRemove) => {
   return allEmptyCells.filter((currentCell) => {
@@ -243,8 +244,9 @@ const updateActors = (actors, rowCount, colCount) => {
 const actorUpdateLoop = (rowCount, columnCount) => {
   localActors = updateActors(localActors, rowCount, columnCount);
   postMessage({ message: "UPDATE_ACTORS", value: localActors });
-  setTimeout(() => {
+  timeoutVariable = setTimeout(() => {
     actorUpdateLoop(rowCount, columnCount);
+    // 30 FPS
   }, 1000 / 30);
 };
 
@@ -254,6 +256,9 @@ onmessage = function (event) {
   if (message === "UPDATE_ACTORS") {
     localActors = value;
     actorUpdateLoop(rowCount, columnCount);
-    // postMessage({ message: "UPDATE_ACTORS", value: newActors });
+  }
+  if (message === "CLEAR_ACTORS") {
+    clearTimeout(timeoutVariable);
+    localActors = [];
   }
 };

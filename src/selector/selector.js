@@ -53,8 +53,6 @@ const setupCanvas = () => {
 
     const xRounded = roundToNearestEmojiSlot(x);
     const yRounded = roundToNearestEmojiSlot(y);
-    console.log("x: " + xRounded + " y: " + yRounded);
-    console.log("x: " + xRounded + " y: " + yRounded);
     const row = yRounded / 20;
     const column = xRounded / 20;
 

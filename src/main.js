@@ -20,6 +20,11 @@ let actors = [];
 
 const actorWorker = new Worker(new URL("./Actor.worker.js", import.meta.url));
 
+actorWorker.onmessage = (event) => {
+  const { value } = event.data;
+  actors = value;
+};
+
 const loadSpritesheets = (callback = () => {}) => {
   spriteCanvas = document.createElement("canvas");
   spriteContext = spriteCanvas.getContext("2d");
@@ -104,6 +109,12 @@ const draw = () => {
   });
 };
 
+const clearActorsInWorker = () => {
+  actorWorker.postMessage({
+    message: "CLEAR_ACTORS",
+  });
+};
+
 const sendActorsForUpdate = (newActors) => {
   actorWorker.postMessage({
     message: "UPDATE_ACTORS",
@@ -114,6 +125,8 @@ const sendActorsForUpdate = (newActors) => {
 };
 
 const setupCanvas = () => {
+  clearActorsInWorker();
+
   columnCount = Math.ceil(canvas.width / EMOJI_SIZE);
   rowCount = Math.ceil(canvas.height / EMOJI_SIZE);
 
@@ -125,11 +138,6 @@ const setupCanvas = () => {
     animalCount: 50,
     rockCount: 10,
   });
-
-  actorWorker.onmessage = (event) => {
-    const { value } = event.data;
-    actors = value;
-  };
 
   sendActorsForUpdate(actors);
   draw(actors);
@@ -160,5 +168,24 @@ const setLoadingScreen = () => {
   };
   loadingText.src = loadingImage.data;
 };
+
+const setResizeHandler = (resizeCallback, timeout = 200) => {
+  let timerId;
+  window.addEventListener("resize", () => {
+    if (timerId !== undefined) {
+      clearTimeout(timerId);
+      timerId = undefined;
+    }
+    timerId = setTimeout(() => {
+      timerId = undefined;
+      resizeCallback();
+    }, timeout);
+  });
+};
+
+const resizeCallback = () => {
+  setupCanvas();
+};
+setResizeHandler(resizeCallback, 250);
 
 setLoadingScreen();
