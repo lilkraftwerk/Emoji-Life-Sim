@@ -1,6 +1,6 @@
 import { EMOJI_SIZE, loadingImage } from "./Globals";
 import { convertRowColumnToCoords, setUpActors } from "./Life";
-import scaleCanvas from './ScaleCanvas'
+import scaleCanvas from "./ScaleCanvas";
 
 let rowCount;
 let columnCount;
@@ -149,19 +149,27 @@ const setupSimulation = () => {
   draw(actors);
 };
 
-const setLoadingScreen = () => {
-  // get canvas
-  canvas = document.getElementById("myCanvas");
-  context = canvas.getContext("2d");
+const updateCanvas = () => {
+  if (!canvas) {
+    canvas = document.getElementById("myCanvas");
+  }
+  if (!context) {
+    context = canvas.getContext("2d");
+  }
 
-  const newWidth = window.innerWidth; 
-  const newHeight = window.innerHeight; 
+  const newWidth = window.innerWidth;
+  const newHeight = window.innerHeight;
 
-  scaleCanvas(canvas, context, newWidth, newHeight)
+  scaleCanvas(canvas, context, newWidth, newHeight);
 
   canvas.width = newWidth;
   canvas.height = newHeight;
+};
 
+const setLoadingScreen = () => {
+  // get canvas
+
+  updateCanvas();
 
   const loadingText = new Image();
   loadingText.onload = () => {
@@ -198,10 +206,14 @@ const setResizeHandler = (resizeCallback, timeout = 200) => {
 };
 
 const resizeCallback = () => {
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
+  updateCanvas();
   setupSimulation();
 };
+
+window.addEventListener("orientationchange", () => {
+  resizeCallback();
+});
+
 setResizeHandler(resizeCallback, 250);
 
 setLoadingScreen();
