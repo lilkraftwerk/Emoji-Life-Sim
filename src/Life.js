@@ -29,6 +29,18 @@ export const findAllEmptyCells = (rowCount, columnCount, actors) => {
   return empties;
 };
 
+export const getEmojiAtLocation = (emojiRow, emojiColumn) => {
+  const xInd = emojiRow * 20;
+  const yInd = emojiColumn * 20;
+  return [xInd, yInd];
+};
+
+export const getEmojiAtLocationReversed = (emojiRow, emojiColumn) => {
+  const xInd = Math.abs(29 - emojiRow) * 20;
+  const yInd = emojiColumn * 20;
+  return [xInd, yInd];
+};
+
 export const findNeighbors = (actor, allActors) => {
   const { row, column } = actor;
 

@@ -1,5 +1,10 @@
 import { EMOJI_SIZE, loadingImage } from "./Globals";
-import { convertRowColumnToCoords, setUpActors } from "./Life";
+import {
+  convertRowColumnToCoords,
+  setUpActors,
+  getEmojiAtLocation,
+  getEmojiAtLocationReversed,
+} from "./Life";
 import scaleCanvas from "./ScaleCanvas";
 
 let rowCount;
@@ -45,18 +50,6 @@ const loadSpritesheets = (callback = () => {}) => {
     callback();
   };
   spritesheet.src = FILENAME;
-};
-
-export const getEmojiAtLocation = (emojiRow, emojiColumn) => {
-  const xInd = emojiRow * 20;
-  const yInd = emojiColumn * 20;
-  return [xInd, yInd];
-};
-
-export const getEmojiAtLocationReversed = (emojiRow, emojiColumn) => {
-  const xInd = Math.abs(29 - emojiRow) * 20;
-  const yInd = emojiColumn * 20;
-  return [xInd, yInd];
 };
 
 const draw = () => {
@@ -167,8 +160,6 @@ const updateCanvas = () => {
 };
 
 const setLoadingScreen = () => {
-  // get canvas
-
   updateCanvas();
 
   const loadingText = new Image();
@@ -215,5 +206,4 @@ window.addEventListener("orientationchange", () => {
 });
 
 setResizeHandler(resizeCallback, 250);
-
 setLoadingScreen();
